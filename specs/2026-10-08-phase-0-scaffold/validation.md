@@ -48,15 +48,15 @@ All four commands must return exit code 0.
 
 ## Merge criteria
 
-- [ ] Gate 1 returns exit code 0.
-- [ ] Gate 2 returns exit code 0.
-- [ ] Gate 3 returns exit code 0.
-- [ ] `uv.lock` exists and is committed.
-- [ ] `git check-ignore .env` prints `.env`, so git ignores the secret file.
-- [ ] `git check-ignore .env.example` prints nothing, so git accepts the example file.
-- [ ] `.env.example` has empty values for every secret name.
-- [ ] No changed file contains a token, key, or password.
-- [ ] Changed files are only: `pyproject.toml`, `uv.lock`, `shippy/`, `tests/`, `.env.example`, `.gitignore`.
+- [x] Gate 1 returns exit code 0.
+- [x] Gate 2 returns exit code 0.
+- [x] Gate 3 returns exit code 0.
+- [x] `uv.lock` exists and is committed.
+- [x] `git check-ignore .env` prints `.env`, so git ignores the secret file.
+- [x] `git check-ignore .env.example` prints nothing, so git accepts the example file.
+- [x] `.env.example` has empty values for every secret name.
+- [x] No changed file contains a token, key, or password.
+- [x] Changed files are only: `pyproject.toml`, `uv.lock`, `shippy/`, `tests/`, `.env.example`, `.gitignore`.
 
 ## Evidence
 
@@ -76,3 +76,4 @@ Put it in the PR description or the phase log.
 ---
 *Created: 2026-10-08*
 *Rewritten: 2026-10-08 - flat package folder, no packaging tool, ASD-STE 100 style*
+*Last amended: 2026-10-08 - all merge criteria checked for phase 0*

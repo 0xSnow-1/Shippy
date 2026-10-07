@@ -40,6 +40,11 @@ uv run pytest
 uv run pytest tests/test_smoke.py
 ```
 
+### Spec checkboxes
+
+Plan and validation files in `specs/` track work with `- [ ]` boxes.
+Tick a box (`- [x]`) when its item passes the verify step.
+
 ### Explanations to the human (ASD-STE 100 style)
 
 You write for a human in the loop.
