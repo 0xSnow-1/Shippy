@@ -21,6 +21,8 @@ Every run is fully reconstructable from an append-only decision log.
 
 When confidence is low or sources conflict, the system refuses and points to the original document instead of guessing.
 
+Every published reliability metric carries a declared denominator and a frozen baseline.
+
 ## Success looks like
 
 A fresh checkout reaches a working demo in under five minutes via `docker compose up`.
@@ -56,3 +58,4 @@ Learning docs use Simplified Technical English style: short active sentences, si
 ---
 *Created: 2026-10-07*
 *Last amended: 2026-10-07 - reframed from portfolio piece to internal tool "Shippy"; Slack as primary human surface*
+*Last amended: 2026-10-08 - core promise gains the denominator-and-frozen-baseline guarantee (realistic_constraint_key.md)*
