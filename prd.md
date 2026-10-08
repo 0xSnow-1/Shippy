@@ -47,7 +47,7 @@ Shippy makes that failure mode structurally impossible: every claim is cited, ev
 | Surface | Who | Purpose |
 |---|---|---|
 | Slack | Operations staff | Ask questions, receive cited answers, approve/reject write actions with buttons |
-| REST API | Backend services, scripts | `POST /lookup`, `POST /workflows/run`, `GET /runs/{id}`, `GET /stats`, approve/reject |
+| REST API | Backend services, scripts | `POST /lookup`, `POST /workflows/run`, `GET /runs/{id}`, `GET /runs/{id}/status`, `GET /stats`, approve/reject |
 | `scripts/demo.sh` | Anyone (no credentials) | End-to-end proof of the flow using fallback modes |
 
 ## Architecture
@@ -118,6 +118,7 @@ All endpoints require `X-API-Key` (401 otherwise).
 | `POST /runs/{id}/approve` | Approves a pending write; resumes execution |
 | `POST /runs/{id}/reject` | Rejects; run closes with rejection event |
 | `GET /runs/{id}` | Full decision log: inputs, retrieved chunk IDs, plan, tool calls, approvals, outputs, LangSmith run link |
+| `GET /runs/{id}/status` | Small polling payload for progress displays: `{run_id, state, step}`; callers poll during approval waits |
 | `GET /health` | Liveness |
 | `GET /stats` | Latency p50/p95, approval rate, error counts, per-run token cost |
 

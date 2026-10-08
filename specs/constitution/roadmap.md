@@ -133,6 +133,7 @@ Parallel-safe with phase 10.
 - [ ] Append-only `run_events` table
 - [ ] Event capture across the runner
 - [ ] `GET /runs/{id}` replay
+- [ ] `GET /runs/{id}/status` - small polling payload for progress displays: `run_id`, `state`, current `step`
 - [ ] Verify: after any run, `curl localhost:8000/runs/$ID` returns the full decision trail in order.
 
 ## Phase 14: /workflows/run E2E
@@ -194,3 +195,4 @@ Human-only actions: Slack workspace/app creation (phase 11), Google Cloud pre-pr
 *Last amended: 2026-10-07 - Streamlit phase removed; Slack live, Asana live + learn_asana.md, Gmail live OAuth, demo.sh, LangSmith, API-key auth, Shippy naming*
 *Last amended: 2026-10-08 - every phase rewritten as a task list with a verify box; phase 0 ticked*
 *Last amended: 2026-10-08 - constraint-key work folded in: traps (1), B0 freeze (6), load (7), episode smoke (9), fault mode (10), pass^k (14), cron/replay (16), soak + baseline H (18)*
+*Last amended: 2026-10-08 - phase 13 gains `GET /runs/{id}/status` for agent status polling (JD line 13)*

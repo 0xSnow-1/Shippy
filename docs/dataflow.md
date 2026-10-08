@@ -30,7 +30,7 @@ Nobody can reconstruct why the system did something.
 
 Shippy is one service that closes all three gaps.
 
-1. It answers procedural questions with a source and a quote. Guessing is impossible by design.
+1. It answers procedural questions with a source and a quote. Every quoted citation is verified verbatim against retrieved chunks.
 2. It runs follow-up actions through a gate. A human approves every write action.
 3. It logs every decision to an append-only record. Any run can be replayed later.
 
