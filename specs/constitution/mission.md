@@ -31,7 +31,7 @@ A user asks a question in Slack, receives a cited answer, approves the proposed 
 
 The credential-free path (`scripts/demo.sh`) proves the same flow end-to-end with local fallbacks, so CI and new contributors never need live accounts.
 
-The eval suite runs in CI and blocks merges when groundedness or refusal correctness regresses.
+The eval suite runs in CI and blocks merges when a golden case or the log-completeness check regresses.
 
 Every external concept the builder touches (PAT, respx, OAuth flows) is explained in the project's own learning docs, so no integration is a black box.
 
@@ -47,6 +47,10 @@ It does not implement SOP enforcement, ChatOps, or autonomous scheduling (roadma
 
 Scope is ruthless: a shipped thin slice beats a partial deep slice.
 
+No complexity unless needed: every component must earn its place.
+The eval suite names when a simple default breaks.
+Then that one component upgrades, nothing else.
+
 Live integration code and demo integration code share one interface, so the no-credential path proves the contract the live path ships with.
 
 Every phase of work ends with a verification command that can be run locally.
@@ -59,3 +63,4 @@ Learning docs use Simplified Technical English style: short active sentences, si
 *Created: 2026-10-07*
 *Last amended: 2026-10-07 - reframed from portfolio piece to internal tool "Shippy"; Slack as primary human surface*
 *Last amended: 2026-10-08 - core promise gains the denominator-and-frozen-baseline guarantee (realistic_constraint_key.md)*
+*Last amended: 2026-10-09 - operating principle added: no complexity unless needed; CI block wording aligned with the grilling decisions (docs/decisions.md)*

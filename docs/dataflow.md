@@ -51,7 +51,7 @@ Both surfaces run the same engine behind them.
 | Part | Technology | One-line job |
 |---|---|---|
 | Human surface | Slack Bolt app, Socket Mode, Block Kit | Receives messages and approval clicks |
-| Machine surface | FastAPI + uvicorn, API-key middleware | Serves REST and SSE streaming |
+| Machine surface | FastAPI + uvicorn, API-key middleware | Serves REST |
 | Harness (step runner) | LangGraph | Plans, executes, verifies. Cap: 4 steps |
 | Tool-call loop | Raw function-calling loop under LangGraph | Asks the LLM for tool calls, runs them, returns results |
 | LLM | Claude Haiku on AWS Bedrock (`ChatBedrockConverse`) | Composes answers and plans tool use |
@@ -83,10 +83,12 @@ The harness calls the LLM at exactly two points: composing a cited answer from r
 The LLM never ranks retrieval results, never validates citations, never passes the gate, and never writes log rows. Those jobs are plain code.
 
 **Is this built without LangGraph?**
-No. LangGraph IS the harness.
-The harness is a LangGraph graph with named nodes: plan, execute, verify.
-LangGraph enforces the step cap of 4 and hosts the validation gate node.
+A plain loop could do this work. LangGraph is the runner, not the harness.
+The harness is the four tools, the citation validator, the gate, and the audit log.
+LangGraph runs that harness as a graph with named nodes: plan, execute, verify.
+It enforces the step cap of 4 and hosts the validation gate node.
 Under the graph sits a raw tool-call loop. That loop is the tested primitive LangGraph drives.
+The runner stays because the builder knows LangGraph, the JD names LangChain, and LangSmith traces graphs natively.
 
 **Is it just a harness?**
 Yes. Shippy's core is an agent harness: a controlled loop that retrieves, calls tools, gates writes, and logs everything.
@@ -144,8 +146,8 @@ Citation validator (pure Python, no AI)
       │
       ├─ pass ──▶ Answer with source ID + verbatim quote
       │                 │
-      │                 ├─▶ Slack reply (Block Kit)
-      │                 └─▶ SSE stream to REST client
+│                 ├─▶ Slack reply (Block Kit)
+│                 └─▶ REST response (POST /lookup)
       │
       └─ fail ──▶ REFUSAL: link to the original document
       │
@@ -294,7 +296,7 @@ One ID answers: what happened, how long it took, what it cost.
 | Language | Python 3.12, `uv` | Fast iteration, locked dependencies |
 | Lint and format | `ruff` | One tool, fast |
 | Tests | `pytest` + `respx` | Offline tests plus HTTP contract tests |
-| API | FastAPI + uvicorn | SSE streaming, API-key middleware, named in the job description |
+| API | FastAPI + uvicorn | API-key middleware; FastAPI named in the job description |
 | Harness | LangGraph | Step caps, gate nodes, native LangSmith tracing |
 | LLM | Bedrock Claude Haiku, provider interface | Live path plus offline MockLLM behind the same port |
 | Vector store | Chroma embedded | No service to operate at this corpus size |
@@ -315,4 +317,5 @@ Everything else in the repository exists to support, test, or prove that line.
 ---
 
 *Created: 2026-10-08*
+*Last amended: 2026-10-09 - LangGraph reframed as runner, SSE removed, harness definition corrected*
 *Purpose: problem statement and end-to-end data flow with tech mapped to each step*

@@ -13,7 +13,7 @@ Human interaction happens in Slack (questions and approval buttons).
 Machine interaction happens over a REST API.
 A credential-free demo script proves the same flow with local fallbacks.
 
-Solo build, soft 3-5 week target, ordered by the phases in `specs/constitution/roadmap.md`.
+Solo build, no calendar target, ordered by the phases in `specs/constitution/roadmap.md`.
 
 ## Problem
 
@@ -113,7 +113,7 @@ All endpoints require `X-API-Key` (401 otherwise).
 
 | Endpoint | Behavior |
 |---|---|
-| `POST /lookup` | SOP question → cited answer; SSE streaming variant emits tokens incrementally |
+| `POST /lookup` | SOP question → cited answer with source ID and verbatim quote |
 | `POST /workflows/run` | Initiates a workflow; returns pending-approval handle `{run_id, status: "pending_approval"}` |
 | `POST /runs/{id}/approve` | Approves a pending write; resumes execution |
 | `POST /runs/{id}/reject` | Rejects; run closes with rejection event |
@@ -131,7 +131,8 @@ Events cover prompt, retrieved chunk IDs, model output, tool calls, approvals, r
 
 - 20 golden cases (JSONL): expected source ID, expected routing (sops vs clients), expected refusal.
 - Offline mode (MockLLM + local stores) runs in GitHub Actions on every PR alongside ruff and pytest.
-- Refusal-correctness regressions block merge.
+- Golden-case failures and unlogged-action failures block merge.
+- Rate metrics (groundedness, approval rate, latency, tool success) are reported with declared denominators, never gated.
 
 ### 8. Observability
 
@@ -157,17 +158,20 @@ Other integrations are documented in the README.
 
 ## Success metrics
 
-| Metric | Target | How measured |
-|---|---|---|
-| Answer groundedness (source cited + verbatim quote) | ≥ 95% | Audit log sampling |
-| Human approval rate (as-is) | ≥ 85% | Approval events / writes |
-| Time-to-resolution, question → approved task | < 60s | Run timestamps |
-| Refusal correctness (stale/conflicting) | 100% of 20-case eval | CI gate |
-| Tool call success rate | ≥ 99% | Run logs |
-| p95 lookup latency | < 8s | `/stats` |
-| Zero unlogged agent actions | 0 | Completeness check |
-| Cold-start demo | `docker compose up` → working stack in < 5 min | README runbook |
-| Credential-free demo | `scripts/demo.sh` passes with no live tokens | CI |
+Deterministic checks block merges.
+Rate metrics are reported with denominators.
+
+| Metric | Target | How measured | Enforcement |
+|---|---|---|---|
+| Golden-case suite (citation, routing, refusal) | 100% of 20 cases | CI gate | Blocks merge |
+| Zero unlogged agent actions | 0 | Completeness check | Blocks merge |
+| Answer groundedness (source cited + verbatim quote) | ≥ 95% | Audit log sampling | Reported with denominator |
+| Human approval rate (as-is) | ≥ 85% | Approval events / writes | Reported with denominator |
+| Time-to-resolution, question → approved task | < 60s | Run timestamps | Reported with denominator |
+| Tool call success rate | ≥ 99% | Run logs | Reported with denominator |
+| p95 lookup latency | < 8s | `/stats` | Reported with denominator |
+| Cold-start demo | `docker compose up` → working stack in < 5 min | README runbook | Reported |
+| Credential-free demo | `scripts/demo.sh` passes with no live tokens | CI | Reported |
 
 ## Risks and mitigations
 
@@ -180,19 +184,20 @@ Other integrations are documented in the README.
 - BookStack image drift → pinned digest, idempotent seed script, ingestion fails loudly.
 - Secrets leakage → `.env` git-ignored, never logged, API keys compared with constant-time equality.
 
-## Scope (soft target, priority order)
+## Scope
 
-Week 1: phases 0-3 (scaffold, BookStack, ingestion, both corpora).
-Week 2: phases 4-7 (retriever, citation, eval set, API + auth).
-Week 3: phases 8-10 (tool loop + Bedrock, step runner, Asana live + learn doc).
-Week 4: phases 11-14 (Slack live, Gmail live, audit log, workflow E2E + demo.sh).
-Week 5: phases 15-18 (stats, CI gate, docs/ADRs, buffer).
+No calendar target.
+Phases run in roadmap order: small, verified, one at a time.
+If scope must shrink, cut in this order: stats polish, then docs extras, then buffer.
+Never cut tests or the audit log.
 
 ### Explicitly deferred
 
 - Pinecone, Angular embedding, autonomous scheduling, SOP enforcement, ChatOps.
 - Google OAuth app verification (stays in Testing status for single-user operation).
 - Rate limiting and multi-tenant auth (documented as future hardening).
+- Reliability extras from `realistic_constraint_key.md`: LLM user simulator, pass^k episodes, fault injection, load envelope, soak cron, replay mode, human baseline.
+- SSE streaming (cut 2026-10-09; see `docs/decisions.md`).
 
 ## Definition of done
 
@@ -206,3 +211,4 @@ Week 5: phases 15-18 (stats, CI gate, docs/ADRs, buffer).
 ---
 *Created: 2026-10-07*
 *Rewritten: 2026-10-07 - from MAG-internal spec to Shippy self-hosted internal tool; references specs/constitution/ for durable decisions*
+*Amended: 2026-10-09 - grilling session: SSE cut, CI gates fixed (golden cases + log completeness block, rates reported), calendar target removed, constraint-key extras deferred. Decisions in `docs/decisions.md`.*

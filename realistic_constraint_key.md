@@ -8,6 +8,23 @@ It also records why other businesses in this domain trust the results.
 
 ---
 
+## Scope status (2026-10-09)
+
+The grilling session cut this file's roadmap extras to the spine.
+
+Kept for v1: planted traps (C2), deterministic scoring (C3), frozen baselines with declared denominators, the refusal gate in CI, the log-completeness check, and the two-flag baseline split.
+
+Deferred as future-work: the C1 episode harness and user simulator, pass^k, C4 fault injection, the C5 load envelope, the C6 scripted approver, C7 ceilings beyond the step cap, C8 soak, cron, replay, R_fault, paired-baseline automation, human baseline H, and the k-trial loop.
+
+Known contradiction in C1: the phrasing-variant simulator needs a live LLM, yet section 7 costs it as offline-free with MockLLM.
+Canned replies vary nothing, so offline k=5 proves nothing.
+C1 stays future-work until it is redesigned.
+
+The spine itself is unchanged: this file still defines how a believable number is produced.
+Deferral changes when the extras run, not how honesty is reported.
+
+---
+
 ## 1. Project frame
 
 **Name:** Shippy.
@@ -193,6 +210,9 @@ No subtracting averages from different test mixes. Paired comparison only.
 
 Every row declares its denominator, its constraint, and its gate.
 
+After the 2026-10-09 strip: only the refusal row and the unlogged-actions row block CI.
+Every other row is reported with its denominator, never gated.
+
 | Metric | Denominator | Constraint | Baseline | Gate |
 |---|---|---|---|---|
 | Groundedness | Non-refused answers in eval set | C1 phrasing variants | B0 | >= 95%, never below B0 |
@@ -228,6 +248,9 @@ Live mode produces the published numbers for the LLM-dependent metrics.
 We label which mode produced every number.
 
 ## 8. How this maps to the roadmap
+
+Superseded on 2026-10-09: the additions below were stripped from the roadmap by the grilling session.
+This table stays as a record of planned future-work, not active tasks.
 
 Decisions applied to `specs/constitution/roadmap.md` on 2026-10-08:
 
@@ -302,18 +325,24 @@ Declared limits build more trust than silent ones.
 
 ## 11. Definition of done for this key
 
-- [ ] B0 baseline number exists and is frozen before tuning.
+### v1 (active)
+
+- [ ] Baseline numbers exist and are frozen before tuning: dense+contract, hybrid no-contract, naive both-off.
 - [ ] Eval set contains planted traps, and refusal correctness scores 100% on them.
+- [ ] Every published scorecard row has a declared denominator and a stated mode (offline or live).
+- [ ] The whole procedure runs from a fresh clone with one documented command.
+
+### Future-work (deferred 2026-10-09)
+
 - [ ] pass^k reported for all episodes: k=5 offline, k=3 live.
 - [ ] Fault profile runs green: no hangs, no unlogged actions, gates hold under fault.
 - [ ] p95 measured under concurrent load, not idle.
-- [ ] Every scorecard row has a declared denominator and a stated mode (offline or live).
 - [ ] Replay command re-runs recorded events against a candidate build.
 - [ ] Human baseline H recorded with n stated.
-- [ ] The whole procedure runs from a fresh clone with one documented command.
 
 ---
 
 *Created: 2026-10-08*
 *Last amended: 2026-10-08 - scope decisions folded in: adapter-only faults, k=5 offline / k=3 live, H self-measured, daily cron, roadmap mapping applied*
+*Last amended: 2026-10-09 - grilling session: roadmap extras stripped to spine (see Scope status), C1 contradiction recorded, DoD split into active and future-work*
 *Purpose: baseline and constraint definition for Shippy's reliability claims*

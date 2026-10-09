@@ -15,8 +15,8 @@ Python 3.12 with `uv` for environment and dependency management.
 
 | Layer | Choice | Why |
 |---|---|---|
-| Step runner | LangGraph | Named skill set in the job description; native step caps, conditional gates, verify nodes the harness requires |
-| API | FastAPI + uvicorn with API-key middleware | Named in the job description; SSE streaming for real-time responses; API key gives every caller an identity |
+| Step runner | LangGraph | Builder's hands-on LangChain/LangGraph experience; the JD names LangChain; LangSmith traces graph nodes natively; plan/execute/verify maps straight onto the graph |
+| API | FastAPI + uvicorn with API-key middleware | Named in the job description; API key gives every caller an identity |
 | LLM | Claude Haiku on AWS Bedrock via `langchain_aws.ChatBedrockConverse` | Builder already runs this pattern in seven other projects; bearer-token auth, no AWS profiles needed |
 | LLM portability | Provider interface + `MockLLM` | Unit tests run offline and free; Bedrock is the only live provider (ADR documents the choice over OpenAI) |
 | Retrieval | Chroma (embedded) + `rank_bm25` + RRF fusion | Named in the job description; hybrid retrieval per PRD; BM25 keeps keyword search offline |
@@ -80,6 +80,8 @@ OpenAI / Assistants API: the job description names it, but the builder's working
 
 LangServe or frameworks beyond LangGraph: the PRD demands a single-pass capped runner, not open-ended orchestration.
 
+SSE streaming: cut from v1 on 2026-10-09 - it proves none of the three promises, and the job description never names it. Revisit only if a REST consumer asks for incremental tokens.
+
 ## External dependencies
 
 All integrations use free tiers: Slack free workspace, Asana free PAT, Google OAuth Testing, Bedrock bearer token and LangSmith keys already provisioned by the builder.
@@ -89,3 +91,4 @@ Zero paid new accounts.
 ---
 *Created: 2026-10-07*
 *Last amended: 2026-10-07 - Bedrock/ChatBedrockConverse, LangSmith over OTel, Streamlit dropped, live Slack/Asana/Gmail, API-key auth, named Shippy*
+*Last amended: 2026-10-09 - grilling session: LangGraph and SSE rationales corrected (false JD claims removed), SSE added to rejected choices*
