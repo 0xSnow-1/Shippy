@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "client-profile-nordhaven-goods",
+    "title": "Client Profile - Nordhaven Goods",
+    "markdown": "## Account\nNordhaven Goods sells outdoor gear through our marketplace. The account opened in 2024 and runs about 900 orders a month. The billing contact is R. Vellani, finance lead.\n\n## Service terms\nNordhaven is on the standard service tier. They get email support inside working hours. Returns follow the general policy with no client specific changes.\n\n## Preferences\nThey want delivery updates sent to the operations alias, not to individual buyers. They ask for a short written summary at the end of every escalation."
+  },
+  {
+    "slug": "client-profile-pellcroft-supply-co",
+    "title": "Client Profile - Pellcroft Supply Co",
+    "markdown": "## Account\nPellcroft Supply Co supplies components to independent workshops. The account opened in 2023 and runs about 300 orders a month. The operations contact is D. Marrow, warehouse manager.\n\n## Service terms\nPellcroft is on the priority tier. Their orders skip the standard packing queue. Escalations get a reply inside two working hours.\n\n## Preferences\nThey require proof of delivery on every shipment. They reject partial shipments and prefer to wait for a full pick."
+  },
+  {
+    "slug": "client-profile-bramblewick-retail",
+    "title": "Client Profile - Bramblewick Retail",
+    "markdown": "## Account\nBramblewick Retail runs homeware stores and an online shop. The account opened in 2022 and runs about 2,000 orders a month. The contact is S. Okonkwo, head of ecommerce.\n\n## Service terms\nBramblewick is on the priority tier with a named account manager. They have a contractual escalation path that ends with their managing director.\n\n## Preferences\nThey want weekly stock reports every Friday. They never accept a substitute item on a backorder."
+  },
+  {
+    "slug": "client-profile-quayside-direct",
+    "title": "Client Profile - Quayside Direct",
+    "markdown": "## Account\nQuayside Direct sells marine spares to boat owners. The account opened in 2025 and runs about 450 orders a month. The contact is L. Ferreira, purchasing officer.\n\n## Service terms\nQuayside Direct is on the standard service tier. Email support inside working hours. Chargeback responses are handled with their own evidence pack template.\n\n## Preferences\nThey ask for serial numbers on every packing slip. They want the carrier named in every shipping update."
+  },
+  {
+    "slug": "client-profile-marrowfield-outfitters",
+    "title": "Client Profile - Marrowfield Outfitters",
+    "markdown": "## Account\nMarrowfield Outfitters sells workwear to trade customers. The account opened in 2024 and runs about 700 orders a month. The contact is J. Aldridge, operations director.\n\n## Service terms\nMarrowfield is on the priority tier. Split shipments are allowed and expected on trade orders. Returns above 500 units of currency need their written approval first.\n\n## Preferences\nThey want invoices sent on the day of dispatch. They ask for a named contact on every escalation."
+  },
+  {
+    "slug": "client-profile-tindale-homewares",
+    "title": "Client Profile - Tindale Homewares",
+    "markdown": "## Account\nTindale Homewares is a single site retailer with an online shop. The account opened in 2025 and runs about 150 orders a month. The contact is P. Nkemelu, owner.\n\n## Service terms\nTindale Homewares is on the standard service tier. They use the shared support inbox. Their volume is low, so nothing is scheduled or automated for them.\n\n## Preferences\nThey prefer a phone call for anything urgent. They want refunds issued to the original card only, never as store credit."
+  }
+]

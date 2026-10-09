@@ -11,12 +11,18 @@ The mission forbids touching any company system.
 Every integration targets an account or instance we control.
 So we self-host BookStack, and we are its admin.
 
-Repository state today:
+Repository state at spec time, 2026-10-08:
 
-- No `docker-compose.yml` exists.
-- No `scripts/` folder exists.
-- `.env.example` already lists `BOOKSTACK_URL` and `BOOKSTACK_TOKEN`.
+- No `docker-compose.yml` existed.
+- No `scripts/` folder existed.
+- `.env.example` already listed `BOOKSTACK_URL` and `BOOKSTACK_TOKEN`.
 - Phase 0 installed `httpx`, `pytest`, and `respx`.
+
+State at the end of the phase, 2026-10-09:
+
+- `docker-compose.yml` runs BookStack and MariaDB on port 8080.
+- `scripts/` holds the seed script and the JSON corpus.
+- `.env` holds our own API token and is ignored by git.
 
 Tech choices come from `specs/constitution/tech-stack.md`.
 Docker Compose orchestrates the stack.
@@ -62,7 +68,11 @@ Nothing extra enters this phase.
 **D2 - The stack is BookStack plus MariaDB on host port 8080.**
 Both images use explicit version tags. Never `latest`.
 The database port stays unpublished. Only the app reaches the host.
-Chosen tags: recorded here at implementation.
+Chosen tags: `linuxserver/bookstack:26.09.1` and `mariadb:11.8.9`.
+`linuxserver/bookstack` is the image the BookStack installation docs list first.
+Both tags carry an explicit version. Never `latest`.
+BookStack also needs `APP_KEY`, a session encryption key.
+The stack sets a local default key so a fresh clone starts with no `.env`.
 
 **D3 - The seed script is Python with httpx at `scripts/seed_bookstack.py`.**
 It runs as `uv run python scripts/seed_bookstack.py`.
@@ -74,10 +84,13 @@ No new dependency enters `pyproject.toml`.
 Books use the same rule.
 A re-run never edits and never duplicates an existing page.
 
-**D5 - The API token is minted by hand in the admin UI.**
+**D5 - The API token is minted through the admin UI, and the builder may drive that UI over HTTP.**
 BookStack exposes no token-creation API.
+The pinned image also exposes no web installer, so the admin comes from `bookstack:create-admin`.
+Both steps target our own instance.
 The token lives only in `.env`, which git ignores.
-The click path is in `plan.md`, group 2.
+The cold-start path is in `validation.md`, Gate 6.
+On 2026-10-09 the builder chose the scripted path for Gate 6 and ran it end to end.
 
 **D6 - Corpus content lives in JSON files under `scripts/corpus/`.**
 Data stays separate from code.
@@ -115,7 +128,7 @@ Seeded corpus counts include these pages.
 
 ## Open questions
 
-- [ ] Exact BookStack and MariaDB image tags. Pick current stable versions at implementation and record them in D2.
+- [x] Exact BookStack and MariaDB image tags. Pick current stable versions at implementation and record them in D2.
 - [ ] Do the drafted integration token names (`ASANA_PAT`, `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN`, Gmail names) stay unchanged?
   Carried from phase 0. Resolve when phases 10-12 design their adapters.
 

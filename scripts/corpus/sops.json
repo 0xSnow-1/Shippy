@@ -1,0 +1,93 @@
+[
+  {
+    "slug": "sop-restocking-fee",
+    "title": "SOP - Restocking Fee",
+    "markdown": "## When the fee applies\nA restocking fee applies to opened items returned without a defect. The fee is 10 percent of the item price. The fee is taken from the refund amount before the refund is issued.\n\n## How to apply it\nFind the order in the returns tool. Open the return line. Enter the fee amount in the restocking field. Add the reason code OPENED_OK. Submit the return for approval.\n\n## Exceptions\nDefective items never carry a restocking fee. Items returned inside the 14 day window with the seal intact never carry a restocking fee. Marketplace seller items follow the seller policy instead of this one."
+  },
+  {
+    "slug": "sop-returns-intake",
+    "title": "SOP - Returns Intake",
+    "markdown": "## Receiving a return\nScan the return label when the parcel arrives at the returns desk. Match the scan to an open return in the returns tool. If no match exists, park the parcel in the unmatched bin and raise a returns query.\n\n## Checking the item\nOpen the parcel on camera. Confirm the item matches the return line. Photograph any damage. Grade the item as sellable, refurbishable, or scrap.\n\n## Closing the return\nSet the grade in the returns tool. Attach the photographs. Submit the return. The refund step runs only after the grade is set."
+  },
+  {
+    "slug": "sop-refund-issuance",
+    "title": "SOP - Refund Issuance",
+    "markdown": "## Eligible refunds\nIssue a refund when the return grade is sellable or when the item is defective. Refunds go back to the original payment method. Store credit is offered only when the customer asks for it.\n\n## Timing\nRefunds are issued within two working days of the grade being set. Card issuers may take a further five working days to show the money.\n\n## Holding a refund\nHold a refund when the order is under fraud review or when a chargeback is open. Record the hold reason in the order notes and tell the customer why the refund is delayed."
+  },
+  {
+    "slug": "sop-shipping-delay-comms",
+    "title": "SOP - Shipping Delay Comms",
+    "markdown": "## Detecting a delay\nA shipment is late when the carrier scan is older than 48 hours and the parcel has not moved. The shipping dashboard lists these parcels every morning.\n\n## What to tell the customer\nSend the customer the tracking link, the new expected date, and a one line reason. Do not name a carrier fault before the carrier confirms it. Offer a cancellation with full refund if the new date is more than seven days away.\n\n## Escalating to the carrier\nOpen a carrier trace after 96 hours. Attach the tracking number and the order number. Close the trace when the parcel is delivered."
+  },
+  {
+    "slug": "sop-inventory-cycle-count",
+    "title": "SOP - Inventory Cycle Count",
+    "markdown": "## The count schedule\nCount the A class bins every week, the B class bins every month, and the C class bins every quarter. The cycle count list is generated on Monday from the warehouse system.\n\n## Counting procedure\nPrint the count sheet. Count without looking at the system figure. Enter the counted quantity. If the variance is above 2 percent, recount with a second counter.\n\n## Reconciling\nPost the recount result. A variance above 5 percent needs a warehouse lead sign off. Never adjust stock during an open pick wave."
+  },
+  {
+    "slug": "sop-chargeback-response",
+    "title": "SOP - Chargeback Response",
+    "markdown": "## Receiving a chargeback\nA chargeback lands in the payments queue with a reason code. Acknowledge it inside the issuer deadline, which is usually seven days.\n\n## Building the evidence pack\nCollect the proof of delivery, the customer signature, the IP address of the order, and the support transcript. Map each item to the reason code the issuer used.\n\n## Submitting\nSubmit the pack through the payments portal before the deadline. Record the case reference on the order. If the value is above 500 units of currency, ask the finance controller to review the pack first."
+  },
+  {
+    "slug": "sop-customer-escalation",
+    "title": "SOP - Customer Escalation",
+    "markdown": "## When to escalate\nEscalate after two customer replies that do not resolve the issue, or at once when the customer mentions a regulator, the press, or a safety concern.\n\n## Handing over\nWrite a short brief: the order number, the promise already made, and the decision needed. Post the brief in the escalation channel and tag the duty owner. Do not start a second thread.\n\n## Closing the loop\nThe duty owner replies to the customer within four working hours. Record the outcome in the order notes and mark the escalation as closed."
+  },
+  {
+    "slug": "sop-complaint-resolution",
+    "title": "SOP - Complaint Resolution",
+    "markdown": "## Logging a complaint\nLog every complaint in the complaints register within one working day. Store the channel, the category, and the requested outcome.\n\n## Acknowledging\nAcknowledge the complaint in writing within 24 hours. Confirm what you will check and when you will reply. Never promise a refund before the check is done.\n\n## Resolving\nGive a decision within five working days. If the complaint is upheld, offer refund, replacement, or credit in that order of preference. Record the root cause so the weekly review can see it."
+  },
+  {
+    "slug": "sop-warehouse-safety",
+    "title": "SOP - Warehouse Safety",
+    "markdown": "## Daily start\nCheck the pedestrian walkways are clear before the first pick wave. Confirm the forklift pre-use checklist is signed. Report any spill to the shift lead at once.\n\n## Manual handling\nTeam lifting is required above 20 kilograms. Use the hoist for any pallet above shoulder height. Take a short break from lifting tasks every two hours.\n\n## Incidents\nStop the task, make the area safe, then log the incident in the safety register the same shift. An incident with any injury is reported to the site manager immediately."
+  },
+  {
+    "slug": "sop-damaged-parcel-claims",
+    "title": "SOP - Damaged Parcel Claims",
+    "markdown": "## On delivery\nAsk the customer to photograph the outer box, the label, and the damage before they unpack further. Note the delivery time and the driver name from the tracking record.\n\n## Filing the claim\nFile the carrier claim within seven days of delivery. Attach the photographs, the order value, and the tracking record. Keep the outer box until the claim closes.\n\n## Looking after the customer\nReplace the item first and claim from the carrier second. The customer never waits for the carrier decision."
+  },
+  {
+    "slug": "sop-backorder-policy",
+    "title": "SOP - Backorder Policy",
+    "markdown": "## Placing a backorder\nA backorder is allowed when the supplier confirms a date within 30 days. Tell the customer the date before you take the payment for the backordered line.\n\n## Managing the wait\nSend an update every seven days while the line is open. Cancel and refund automatically if the supplier date slips past 45 days.\n\n## Priority\nBackorders are fulfilled in the order they were placed. Staff orders and replacement orders take priority only when a service recovery is open."
+  },
+  {
+    "slug": "sop-address-correction",
+    "title": "SOP - Address Correction",
+    "markdown": "## Before dispatch\nCorrect the address while the order is still in picking. Use the address tool, then reprint the label. A corrected label voids the first label scan.\n\n## After dispatch\nAsk the carrier for an address change through the carrier portal. Some services refuse changes in transit, so confirm before you promise it to the customer.\n\n## Failed delivery\nIf the address was wrong on our side, reship at our cost. If the customer gave the wrong address, offer reship at cost or a refund."
+  },
+  {
+    "slug": "sop-fraud-review-holds",
+    "title": "SOP - Fraud Review Holds",
+    "markdown": "## Reasons for a hold\nHold an order when the billing and delivery addresses differ on a first order, when the order value is far above the account average, or when the same card appears on several accounts.\n\n## Reviewing\nCheck the account age, the prior order history, and the device record. Approve, reduce, or cancel the order within four working hours. Never tell the customer the reason for a decline.\n\n## Releasing\nRelease the hold by clearing the fraud flag on the order. The payment is captured only after the flag is cleared."
+  },
+  {
+    "slug": "sop-cod-remittance-deadlines",
+    "title": "SOP - COD Remittance Deadlines",
+    "markdown": "## What this SOP covers\nThis SOP covers cash on delivery remittances from our carriers to our bank account. It does not cover customer refunds. It does not cover payout timing for any claim.\n\n## Remittance schedule\nCarriers remit collected cash every Monday for the previous week. Bank clearance takes two working days. The finance team reconciles the remittance file on Wednesday.\n\n## Late remittance\nChase the carrier when a remittance is more than three working days late. Raise a carrier dispute after five working days and notify the finance controller."
+  },
+  {
+    "slug": "sop-vip-escalation-ops",
+    "title": "SOP - VIP Escalation (Ops)",
+    "markdown": "## Who this covers\nThis SOP covers every VIP escalation raised by the customer operations team, including delivery failures and service complaints.\n\n## Escalation target\nRoute the escalation to the Operations Duty Manager. Post the brief in the VIP Ops channel and tag the duty manager on call. The duty manager owns the customer reply.\n\n## Response time\nAcknowledge within one hour during working hours. Resolve or update the customer within four working hours."
+  },
+  {
+    "slug": "sop-vip-escalation-finance",
+    "title": "SOP - VIP Escalation (Finance)",
+    "markdown": "## Who this covers\nThis SOP covers every VIP escalation raised by the customer operations team, including delivery failures and service complaints.\n\n## Escalation target\nRoute the escalation to the Finance Controller. Post the brief in the Billing Escalations channel and tag the controller on call. The controller owns the customer reply.\n\n## Response time\nAcknowledge within one hour during working hours. Resolve or update the customer within four working hours."
+  },
+  {
+    "slug": "sop-subscription-cancellation",
+    "title": "SOP - Subscription Cancellation",
+    "markdown": "## Cancelling\nCancel from the account page or through support. The cancellation takes effect at the end of the paid period. No further charge is taken after the cancellation timestamp.\n\n## Win back\nOffer one pause of up to two months before the cancellation is confirmed. Record the offer and the answer. Do not make a second offer in the same contact.\n\n## Final shipment\nShip any box already paid for. Refund the next box only if the cancellation lands before the packing cut off."
+  },
+  {
+    "slug": "sop-restocking-fee-current",
+    "title": "SOP - Restocking Fee (Current)",
+    "markdown": "## When the fee applies\nThere is no restocking fee on any return inside the 14 day window. The fee was removed for all product lines from the current policy release.\n\n## How to apply it\nOpen the return line in the returns tool. Leave the restocking field empty. Add the reason code OPENED_OK. Submit the return for approval.\n\n## Exceptions\nDefective items are refunded in full. Marketplace seller items follow the seller policy. Any fee applied by mistake is reversed by the returns lead on the same day.",
+    "revised_markdown": "## When the fee applies\nThere is no restocking fee on any return inside the 14 day window. The fee was removed for all product lines from the current policy release. This supersedes every earlier version of the restocking guidance.\n\n## How to apply it\nOpen the return line in the returns tool. Leave the restocking field empty. Add the reason code OPENED_OK. Submit the return for approval. No approval step is required for the fee field because the field stays empty.\n\n## Exceptions\nDefective items are refunded in full. Marketplace seller items follow the seller policy. Any fee applied by mistake is reversed by the returns lead on the same day. If a customer was charged a fee under the old guidance, refund the difference on request without a manager approval."
+  }
+]

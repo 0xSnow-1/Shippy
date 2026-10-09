@@ -21,15 +21,17 @@ Phases are sequential unless marked parallel-safe.
 
 ## Phase 1: Self-hosted BookStack (our own Docker instance, not any company's)
 
-- [ ] Pinned BookStack Docker image
-- [ ] Idempotent seed script (15-20 fake e-commerce SOPs with versions, 5-10 fake client profiles)
-- [ ] Planted traps in the seed data: one stale SOP, one conflicting pair, one keyword decoy, one unanswerable question
-- [ ] Our own API token, minted by us as instance admin
+- [x] Pinned BookStack Docker image
+- [x] Idempotent seed script (15-20 fake e-commerce SOPs with versions, 5-10 fake client profiles)
+- [x] Planted traps in the seed data: one stale SOP, one conflicting pair, one keyword decoy, one unanswerable question
+- [x] Our own API token, minted by us as instance admin
 
 No company system is touched anywhere in this project.
 Every integration targets an account or instance we control.
 
-- [ ] Verify: `docker compose up` then `curl -H "Authorization: Token $ID:$SECRET" localhost:8080/api/pages` returns seeded pages.
+- [x] Verify: `docker compose up` then `curl -H "Authorization: Token $ID:$SECRET" localhost:8080/api/pages` returns seeded pages.
+
+Verify result 2026-10-09: HTTP 200, 24 seeded pages, all five trap slugs present.
 
 ## Phase 2: SOP ingestion
 
@@ -50,7 +52,8 @@ Every integration targets an account or instance we control.
 - [ ] BM25 + dense + RRF fusion
 - [ ] Source-aware across both collections
 - [ ] Returns source metadata
-- [ ] Verify: `uv run pytest tests/test_retrieve.py` - known queries return expected source IDs.
+- [ ] Head-to-head: hybrid vs dense-only on known queries, same contract; the numbers are printed by the test run and decide if RRF stays
+- [ ] Verify: `uv run pytest tests/test_retrieve.py` - known queries return expected source IDs; head-to-head report present.
 
 ## Phase 5: Citation contract
 
@@ -63,23 +66,19 @@ Every integration targets an account or instance we control.
 
 - [ ] 20 JSONL cases: expected source, expected refusal, expected routing
 - [ ] Offline eval runner scoring retrieval only
-- [ ] B0 naive-mode flag (dense-only, no citation contract) runnable on the same eval set
-- [ ] Freeze the B0 baseline number before any tuning; record it in the eval report
-- [ ] k-trial loop in the runner (each case runs k times; pass rate reported per k)
+- [ ] Two eval flags, one variable each: dense-only, and no-contract
+- [ ] Freeze three baseline numbers before any tuning: dense+contract, hybrid no-contract, naive both-off; record them in the eval report
+- [ ] Verify: `uv run python -m shippy.eval` prints pass rate and the frozen baselines; refusal cases at 100%.
 
 Parallel-safe from phase 4 onward.
-
-- [ ] Verify: `uv run python -m shippy.eval` prints pass rate and the frozen B0 baseline; refusal cases at 100%.
 
 ## Phase 7: API core + auth
 
 - [ ] FastAPI app
 - [ ] API-key middleware
 - [ ] `POST /lookup` (retriever + citation contract)
-- [ ] SSE streaming variant
 - [ ] `GET /health`
-- [ ] Load script: 10-20 concurrent virtual users against the API
-- [ ] Verify: `curl` with wrong key returns 401; stream yields chunks incrementally; cited answer under 8s p95 measured under concurrent load, not idle.
+- [ ] Verify: `curl` with wrong key returns 401; correct key returns a cited answer with source ID and verbatim quote.
 
 ## Phase 8: Tool loop core
 
@@ -94,16 +93,15 @@ Parallel-safe from phase 4 onward.
 
 - [ ] LangGraph graph: plan → execute → verify
 - [ ] Step cap 4
+- [ ] Wall-clock timeout per run: one line, fails cleanly
 - [ ] Validation gate node
 - [ ] Structured logs with run ID
-- [ ] Episode smoke case: one simulated-staff episode ends in a programmatic final-state check with MockLLM
-- [ ] Verify: pytest asserts cap enforcement, gate blocks writes missing citations, and the episode smoke case passes.
+- [ ] Verify: pytest asserts cap enforcement and that the gate blocks writes missing citations.
 
 ## Phase 10: Asana adapter (live)
 
 - [ ] Dual-mode `create_task`: live PAT mode + SQLite fallback
 - [ ] respx contract test pinned to Asana's schema
-- [ ] Fault-profile mode shared by all adapters (env var selects: delay, HTTP error, empty body, schema break)
 
 Implementation follows `docs/learn_asana.md` (read it first).
 
@@ -143,8 +141,7 @@ Parallel-safe with phase 10.
 - [ ] Slack approval path
 - [ ] Write execution
 - [ ] `scripts/demo.sh` (credential-free path end to end)
-- [ ] Episode harness with simulated staff; pass^k over k=5 offline trials and k=3 live trials
-- [ ] Verify: `bash scripts/demo.sh` completes clean on a fresh clone without any live tokens; live Slack round-trip also passes; episode harness prints pass^k with refusal cases at 100%.
+- [ ] Verify: `bash scripts/demo.sh` completes clean on a fresh clone without any live tokens; live Slack round-trip also passes.
 
 ## Phase 15: /stats + observability
 
@@ -158,19 +155,16 @@ Parallel-safe with phase 10.
 ## Phase 16: CI eval gate
 
 - [ ] GitHub Actions: ruff, pytest (respx contract tests included), eval suite on every PR
-- [ ] Refusal regressions block merge
-- [ ] Daily cron runs the eval suite; drift shows as a trend in the CI history
-- [ ] Paired baseline check: challenger compares against frozen B0/B1 on the same cases only
-- [ ] Replay command re-runs recorded `run_events` against a candidate build (shadow-style gate)
+- [ ] Golden-case failures and unlogged-action failures block merge
 - [ ] Verify: open a test PR that breaks a golden case and confirm CI fails.
 
-## Phase 17: Docs and ADRs
+## Phase 17: Docs, ADRs, and defense drill
 
 - [ ] README runbook (cold start under 5 minutes, Slack workspace setup, Gmail weekly re-auth)
-- [ ] ADR: provider interface over OpenAI/Assistants
-- [ ] ADR: Chroma over Pinecone
+- [ ] One ADR per major decision, written by the builder: provider interface over OpenAI/Assistants, Chroma over Pinecone, LangGraph runner, SQLite, approval gate, offline mode, constraint-key strip (index lives in `docs/decisions.md`)
 - [ ] Refresh the JD skill matrix
-- [ ] Verify: follow README on a clean checkout without skipping steps.
+- [ ] Defense drill: a two-sentence answer per kept component; a failure simplifies or cuts that component
+- [ ] Verify: follow README on a clean checkout without skipping steps; the builder passes the defense drill.
 
 ## Phase 18: Buffer and hardening
 
@@ -178,7 +172,6 @@ Parallel-safe with phase 10.
 - [ ] Latency tuning
 - [ ] Seed-data polish
 - [ ] Token rotation checks
-- [ ] Soak week: daily cron observed for drift; human baseline H recorded (n=5 timed manual BookStack tasks, self-measured)
 
 ## Dependency notes
 
@@ -196,3 +189,4 @@ Human-only actions: Slack workspace/app creation (phase 11), Google Cloud pre-pr
 *Last amended: 2026-10-08 - every phase rewritten as a task list with a verify box; phase 0 ticked*
 *Last amended: 2026-10-08 - constraint-key work folded in: traps (1), B0 freeze (6), load (7), episode smoke (9), fault mode (10), pass^k (14), cron/replay (16), soak + baseline H (18)*
 *Last amended: 2026-10-08 - phase 13 gains `GET /runs/{id}/status` for agent status polling (JD line 13)*
+*Last amended: 2026-10-09 - grilling session: SSE and load script removed (7), constraint-key extras stripped (6, 9, 10, 14, 16, 18), BM25 head-to-head added (4), B0 split into two flags (6), wall-clock timeout added (9), Phase 17 expands to ADR set + defense drill, CI blocks golden cases and log completeness (16). Decisions in `docs/decisions.md`.*
