@@ -1,6 +1,9 @@
 # Secrets - never commit
 .env
 
+# Search index - never commit
+data/
+
 # Python environment
 .venv/
 __pycache__/

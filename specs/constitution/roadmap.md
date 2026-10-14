@@ -42,13 +42,16 @@ The finish line: one demo where a question via REST returns a cited answer or a 
 
 ### Phase 2: Dual ingestion
 
-- [ ] Pull pages from both books via BookStack API (`operations-sops`, `client-profiles`)
-- [ ] Export Markdown via `GET /api/pages/{id}/export/markdown`
-- [ ] Strip boilerplate (the export's `# Title` line)
-- [ ] Heading-based chunking
-- [ ] Embed into two Chroma collections: `sops` and `clients`
-- [ ] Metadata on every chunk: `sop_id`/`client_id`, `version` (`revision_count`), `updated_at`
-- [ ] Verify: `uv run python -m shippy.ingest` prints both chunk counts; stored chunks round-trip with metadata.
+- [x] Pull pages from both books via BookStack API (`operations-sops`, `client-profiles`)
+- [x] Export Markdown via `GET /api/pages/{id}/export/markdown`
+- [x] Strip boilerplate (the export's `# Title` line)
+- [x] Heading-based chunking
+- [x] Embed into two Chroma collections: `sops` and `clients`
+- [x] Metadata on every chunk: `sop_id`/`client_id`, `version` (`revision_count`), `updated_at`
+- [x] Verify: `uv run python -m shippy.ingest` prints both chunk counts; stored chunks round-trip with metadata.
+
+Verify result 2026-10-14: `sops: 54 chunks from 18 pages`, `clients: 18 chunks from 6 pages`,
+`round-trip: 72 chunks verified with metadata`. Metadata sample holds all five keys.
 
 ### Phase 3: Retrieval, citation contract, evals
 
