@@ -10,6 +10,8 @@ Tick the verify box only when the verify command passes.
 
 Phases are sequential unless marked parallel-safe.
 
+Every phase gets a spec directory under `specs/` with `plan.md`, `requirements.md`, and `validation.md`.
+
 ## Phase 0: Scaffold
 
 - [x] `uv` environment with locked dependencies
@@ -33,155 +35,106 @@ Every integration targets an account or instance we control.
 
 Verify result 2026-10-09: HTTP 200, 24 seeded pages, all five trap slugs present.
 
-## Phase 2: SOP ingestion
+## MVP leg: phases 2-6
 
-- [ ] Pull pages via BookStack API
-- [ ] Export Markdown
-- [ ] Strip boilerplate
+Five phases.
+The finish line: one demo where a question via REST returns a cited answer or a refusal, and one approved `create_task` action executes with its audit trail.
+
+### Phase 2: Dual ingestion
+
+- [ ] Pull pages from both books via BookStack API (`operations-sops`, `client-profiles`)
+- [ ] Export Markdown via `GET /api/pages/{id}/export/markdown`
+- [ ] Strip boilerplate (the export's `# Title` line)
 - [ ] Heading-based chunking
-- [ ] Embed into Chroma with `sop_id`/`version`/`updated_at`
-- [ ] Verify: `uv run python -m shippy.ingest sops` prints chunk count; stored chunks round-trip with metadata.
+- [ ] Embed into two Chroma collections: `sops` and `clients`
+- [ ] Metadata on every chunk: `sop_id`/`client_id`, `version` (`revision_count`), `updated_at`
+- [ ] Verify: `uv run python -m shippy.ingest` prints both chunk counts; stored chunks round-trip with metadata.
 
-## Phase 3: Client corpus
+### Phase 3: Retrieval, citation contract, evals
 
-- [ ] Ingest client profiles into a second Chroma collection with `client_id` metadata
-- [ ] Verify: both collections list non-zero counts.
+- [ ] `search_sop` contract: natural-language `query` in, top-k chunks out, `no_match` status below the relevance floor
+- [ ] Dense retrieval from `sops` only (clients indexed, not routed)
+- [ ] Answer composer: one LLM call, structured output `{answer, quote, proposed_action}`
+- [ ] Provider interface with `MockLLM` (offline) and Bedrock live path
+- [ ] Deterministic validator: verbatim substring check, version-conflict refusal, `no_match` refusal
+- [ ] Refusal payload carries wiki source links
+- [ ] Eval runner over the four traps plus a happy path; runs offline, no network
+- [ ] Verify: `uv run pytest tests/test_contract.py` passes; `uv run python -m shippy.eval` prints a pass rate and every trap case refuses.
 
-## Phase 4: Hybrid retriever
-
-- [ ] BM25 + dense + RRF fusion
-- [ ] Source-aware across both collections
-- [ ] Returns source metadata
-- [ ] Head-to-head: hybrid vs dense-only on known queries, same contract; the numbers are printed by the test run and decide if RRF stays
-- [ ] Verify: `uv run pytest tests/test_retrieve.py` - known queries return expected source IDs; head-to-head report present.
-
-## Phase 5: Citation contract
-
-- [ ] Verbatim-quote validator (substring check)
-- [ ] Confidence threshold
-- [ ] Version-conflict refusal
-- [ ] Verify: `uv run pytest tests/test_citation.py` - pass, missing-quote, and conflict-refusal cases green.
-
-## Phase 6: Golden eval set
-
-- [ ] 20 JSONL cases: expected source, expected refusal, expected routing
-- [ ] Offline eval runner scoring retrieval only
-- [ ] Two eval flags, one variable each: dense-only, and no-contract
-- [ ] Freeze three baseline numbers before any tuning: dense+contract, hybrid no-contract, naive both-off; record them in the eval report
-- [ ] Verify: `uv run python -m shippy.eval` prints pass rate and the frozen baselines; refusal cases at 100%.
-
-Parallel-safe from phase 4 onward.
-
-## Phase 7: API core + auth
+### Phase 4: REST core
 
 - [ ] FastAPI app
-- [ ] API-key middleware
-- [ ] `POST /lookup` (retriever + citation contract)
-- [ ] `GET /health`
-- [ ] Verify: `curl` with wrong key returns 401; correct key returns a cited answer with source ID and verbatim quote.
+- [ ] API-key middleware on `/lookup`
+- [ ] `POST /lookup` wires retrieval plus contract
+- [ ] `GET /health` stays open
+- [ ] Verify: `curl` with wrong key returns 401; correct key returns a cited answer with source ID and verbatim quote; unanswerable question returns a refusal with source links.
 
-## Phase 8: Tool loop core
+### Phase 5: Gated write, audit log, Asana
 
-- [ ] Provider interface
-- [ ] `MockLLM` with canned tool calls
-- [ ] `ChatBedrockConverse` wiring with bearer token
-- [ ] LangSmith tracing on graph/LLM/tool spans
-- [ ] Raw tool-call loop
-- [ ] Verify: offline test drives retrieve → tool_call → tool_result → final answer with no network; one live smoke test traces in LangSmith.
+- [ ] Append-only `run_events` table in SQLite (WAL)
+- [ ] Workflow state machine: `POST /workflows/run` returns `pending_approval`; `POST /workflows/{id}/approve|reject` advances it
+- [ ] Event capture on every transition
+- [ ] Dual-mode `create_task`: live Asana PAT mode + SQLite fallback
+- [ ] `respx` contract test pinned to Asana's schema (implementation follows `docs/learn_asana.md`)
+- [ ] `GET /runs/{id}` replays the event trail in order
+- [ ] Verify: `uv run pytest tests/test_workflow.py tests/test_tools_task.py` passes; a fallback-mode run lands a task; `GET /runs/{id}` returns the full trail.
 
-## Phase 9: Step runner
+### Phase 6: Slack and Gmail adapters
 
-- [ ] LangGraph graph: plan → execute → verify
-- [ ] Step cap 4
-- [ ] Wall-clock timeout per run: one line, fails cleanly
-- [ ] Validation gate node
-- [ ] Structured logs with run ID
-- [ ] Verify: pytest asserts cap enforcement and that the gate blocks writes missing citations.
+- [ ] Dual-mode `send_message`: live Slack mode + no-credential fallback
+- [ ] Dual-mode `send_email`: live Gmail OAuth mode + SQLite outbox fallback
+- [ ] `respx` contract tests for both adapters
+- [ ] Live activation stays optional per adapter; fallback modes prove every contract without tokens
+- [ ] Verify: `uv run pytest tests/test_tools_slack.py tests/test_tools_email.py` passes; a fallback email lands in the outbox table.
 
-## Phase 10: Asana adapter (live)
+## Post-MVP backlog
 
-- [ ] Dual-mode `create_task`: live PAT mode + SQLite fallback
-- [ ] respx contract test pinned to Asana's schema
+Everything deferred from the original 19-phase plan.
+Pick-up order is free.
 
-Implementation follows `docs/learn_asana.md` (read it first).
+### Retrieval upgrades
 
-- [ ] Verify: `uv run pytest tests/test_tools_task.py` - both modes pass; one live task lands in your scratch project.
+- [ ] BM25 + dense + RRF fusion, source-aware across both collections
+- [ ] Head-to-head: hybrid vs dense-only on known queries, same contract; the numbers are printed by the test run and decide if RRF stays
 
-## Phase 11: Slack (live) + approval flow
+### Runner and chat surfaces
 
-- [ ] Create the free workspace and app (guided steps in README: manifest, Socket Mode, tokens)
-- [ ] Build the Bolt connector
-- [ ] Build the Block Kit approval message
-- [ ] Handle approve/reject to resume the run
-
-Parallel-safe with phase 10.
-
-- [ ] Verify: manual round-trip - question in Slack, cited answer, button click, gate passes.
-
-## Phase 12: Gmail adapter (live)
-
-- [ ] Dual-mode `send_email`: live OAuth + outbox fallback
-- [ ] Google Cloud project pre-provisioned by you
-- [ ] `scripts/gmail_auth.sh` handles the weekly Testing-mode re-auth
-- [ ] respx contract test
-- [ ] Verify: `uv run pytest tests/test_tools_email.py` green; one live test email arrives in your inbox.
-
-## Phase 13: Audit log + /runs/{id}
-
-- [ ] Append-only `run_events` table
-- [ ] Event capture across the runner
-- [ ] `GET /runs/{id}` replay
-- [ ] `GET /runs/{id}/status` - small polling payload for progress displays: `run_id`, `state`, current `step`
-- [ ] Verify: after any run, `curl localhost:8000/runs/$ID` returns the full decision trail in order.
-
-## Phase 14: /workflows/run E2E
-
-- [ ] Workflow initiation returning pending-approval handle
-- [ ] REST approve/reject endpoints
-- [ ] Slack approval path
-- [ ] Write execution
+- [ ] LangGraph graph: plan → execute → verify, step cap 4, wall-clock timeout, validation gate node
+- [ ] Slack approval buttons (Block Kit) that resume a paused run
+- [ ] `GET /workflows/{id}/status` polling payload
 - [ ] `scripts/demo.sh` (credential-free path end to end)
-- [ ] Verify: `bash scripts/demo.sh` completes clean on a fresh clone without any live tokens; live Slack round-trip also passes.
+- [ ] LangSmith tracing on graph/LLM/tool spans
 
-## Phase 15: /stats + observability
+### Quality and observability
 
-- [ ] Latency percentiles
-- [ ] Approval rate
-- [ ] Error counts
-- [ ] Per-run token cost from `run_events`
-- [ ] Structured logs carry run IDs that link to LangSmith runs
-- [ ] Verify: `curl localhost:8000/stats` returns populated metrics after sample traffic.
+- [ ] Golden eval set: 20 JSONL cases, two flags (dense-only, no-contract), three frozen baselines
+- [ ] CI gate: ruff, pytest, eval suite on every PR; golden-case and unlogged-action failures block merge
+- [ ] `/stats`: latency percentiles, approval rate, error counts, per-run token cost from `run_events`
+- [ ] Confidence threshold on the contract, only if evals justify it
 
-## Phase 16: CI eval gate
+### Live activation (human actions)
 
-- [ ] GitHub Actions: ruff, pytest (respx contract tests included), eval suite on every PR
-- [ ] Golden-case failures and unlogged-action failures block merge
-- [ ] Verify: open a test PR that breaks a golden case and confirm CI fails.
+- [ ] Slack workspace and app creation (manifest, Socket Mode, tokens)
+- [ ] Google Cloud project + `scripts/gmail_auth.sh` weekly Testing-mode re-auth
+- [ ] Live smoke tests: Slack round-trip, one live Gmail in the inbox
 
-## Phase 17: Docs, ADRs, and defense drill
+### Docs and hardening
 
-- [ ] README runbook (cold start under 5 minutes, Slack workspace setup, Gmail weekly re-auth)
-- [ ] One ADR per major decision, written by the builder: provider interface over OpenAI/Assistants, Chroma over Pinecone, LangGraph runner, SQLite, approval gate, offline mode, constraint-key strip (index lives in `docs/decisions.md`)
+- [ ] README runbook (cold start under 5 minutes, Slack setup, Gmail weekly re-auth)
+- [ ] One ADR per major decision (index in `docs/decisions.md`)
 - [ ] Refresh the JD skill matrix
-- [ ] Defense drill: a two-sentence answer per kept component; a failure simplifies or cuts that component
-- [ ] Verify: follow README on a clean checkout without skipping steps; the builder passes the defense drill.
-
-## Phase 18: Buffer and hardening
-
-- [ ] Edge cases
-- [ ] Latency tuning
-- [ ] Seed-data polish
-- [ ] Token rotation checks
+- [ ] Defense drill: a two-sentence answer per kept component
+- [ ] Edge cases, latency tuning, seed-data polish, token rotation checks
 
 ## Dependency notes
 
-Phases 1-3 block everything downstream.
+MVP phases 2-6 run in order. Each blocks the next.
 
-Phase 6 can start in parallel with 4-5 once ingestion lands.
+Phase 3 tests run offline: `MockLLM` plus the four seeded traps.
 
-Phases 10 and 11 are parallel-safe with each other; both block phase 14.
+Live credentials are optional until Live activation items; fallback modes cover every verify box.
 
-Human-only actions: Slack workspace/app creation (phase 11), Google Cloud pre-provisioning (phase 12) - both are your clicks, scheduled ahead of their phases.
+Human-only actions: Slack workspace creation, Google Cloud provisioning - scheduled when live activation starts.
 
 ---
 *Created: 2026-10-07*
@@ -190,3 +143,4 @@ Human-only actions: Slack workspace/app creation (phase 11), Google Cloud pre-pr
 *Last amended: 2026-10-08 - constraint-key work folded in: traps (1), B0 freeze (6), load (7), episode smoke (9), fault mode (10), pass^k (14), cron/replay (16), soak + baseline H (18)*
 *Last amended: 2026-10-08 - phase 13 gains `GET /runs/{id}/status` for agent status polling (JD line 13)*
 *Last amended: 2026-10-09 - grilling session: SSE and load script removed (7), constraint-key extras stripped (6, 9, 10, 14, 16, 18), BM25 head-to-head added (4), B0 split into two flags (6), wall-clock timeout added (9), Phase 17 expands to ADR set + defense drill, CI blocks golden cases and log completeness (16). Decisions in `docs/decisions.md`.*
+*Last amended: 2026-10-14 - MVP reconstruction: 19 phases become five MVP phases (2-6) plus post-MVP backlog; hybrid retrieval, LangGraph runner, stats, CI gate, golden set deferred; REST + SQLite approval state machine; deterministic citation contract (no confidence threshold); client corpus indexed in phase 2; three dual-mode adapters folded into phases 5-6; three-file spec per phase kept; audit events from day one.*
