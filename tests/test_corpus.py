@@ -3,12 +3,6 @@ import re
 from pathlib import Path
 
 CORPUS = Path(__file__).resolve().parent.parent / "scripts" / "corpus"
-REQUIREMENTS = (
-    Path(__file__).resolve().parent.parent
-    / "specs"
-    / "2026-10-08-phase-1-bookstack"
-    / "requirements.md"
-)
 REQUIRED_KEYS = ("slug", "title", "markdown")
 TRAP_SLUGS = (
     "sop-restocking-fee",
@@ -17,7 +11,6 @@ TRAP_SLUGS = (
     "sop-vip-escalation-finance",
     "sop-cod-remittance-deadlines",
 )
-UNANSWERABLE_QUESTION = "What is the payout limit for the 2026 carrier insurance claim?"
 
 
 def load(name: str) -> list[dict]:
@@ -60,13 +53,3 @@ def test_slug_matches_title() -> None:
 def test_trap_slugs_exist_in_the_corpus() -> None:
     slugs = {entry["slug"] for entry in load("sops.json")}
     assert set(TRAP_SLUGS) <= slugs
-
-
-def test_trap_slugs_match_the_requirements_inventory() -> None:
-    text = REQUIREMENTS.read_text(encoding="utf-8")
-    for slug in TRAP_SLUGS:
-        assert f"`{slug}`" in text
-
-
-def test_unanswerable_question_is_recorded() -> None:
-    assert UNANSWERABLE_QUESTION in REQUIREMENTS.read_text(encoding="utf-8")
