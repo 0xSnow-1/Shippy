@@ -55,14 +55,17 @@ Verify result 2026-10-14: `sops: 54 chunks from 18 pages`, `clients: 18 chunks f
 
 ### Phase 3: Retrieval, citation contract, evals
 
-- [ ] `search_sop` contract: natural-language `query` in, top-k chunks out, `no_match` status below the relevance floor
-- [ ] Dense retrieval from `sops` only (clients indexed, not routed)
-- [ ] Answer composer: one LLM call, structured output `{answer, quote, proposed_action}`
-- [ ] Provider interface with `MockLLM` (offline) and Bedrock live path
-- [ ] Deterministic validator: verbatim substring check, version-conflict refusal, `no_match` refusal
-- [ ] Refusal payload carries wiki source links
-- [ ] Eval runner over the four traps plus a happy path; runs offline, no network
-- [ ] Verify: `uv run pytest tests/test_contract.py` passes; `uv run python -m shippy.eval` prints a pass rate and every trap case refuses.
+- [x] `search_sop` contract: natural-language `query` in, top-k chunks out, `no_match` status below the relevance floor
+- [x] Dense retrieval from `sops` only (clients indexed, not routed)
+- [x] Answer composer: one LLM call, structured output `{answer, quote, proposed_action}`
+- [x] Provider interface with `MockLLM` (offline) and Bedrock live path
+- [x] Deterministic validator: verbatim substring check, version-conflict refusal, `no_match` refusal
+- [x] Refusal payload carries wiki source links
+- [x] Eval runner over the four traps plus a happy path; runs offline, no network
+- [x] Verify: `uv run pytest tests/test_contract.py` passes; `uv run python -m shippy.eval` prints a pass rate and every trap case refuses.
+
+Verify result 2026-10-15: `uv run pytest tests/test_contract.py` — 5 passed.
+`uv run python -m shippy.eval` — PASS happy_path, PASS version_conflict, PASS conflicting_pair, PASS keyword_decoy, PASS unanswerable; pass rate: 5/5.
 
 ### Phase 4: REST core
 

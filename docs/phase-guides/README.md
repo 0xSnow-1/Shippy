@@ -35,8 +35,10 @@ These guides are the story.
 | 0 | `phase-0-scaffold.md` | done |
 | 1 | `phase-1-bookstack.md` | done |
 | 2 | `phase-2-dual-ingestion.md` | done |
-| 3 | not yet written | pending |
+| 3 | `phase-3-retrieval-and-evals.md` | done |
 | 4 | not yet written | pending |
+| 5 | not yet written | pending |
+| 6 | not yet written | pending |
 
 ## Rule
 
