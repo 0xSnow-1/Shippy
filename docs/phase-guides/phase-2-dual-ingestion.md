@@ -168,7 +168,7 @@ All six pass.
 |---|---|---|
 | 1 | `uv run python -m shippy.ingest` | exit 0, three count lines, metadata sample holds all five keys |
 | 2 | Run the ingest twice | Both runs print identical counts |
-| 3 | `uv run pytest` | 28 passed |
+| 3 | `uv run pytest` | 26 passed |
 | 4 | `uv run ruff check .` | clean |
 | 5 | `git status`, `git check-ignore data/chroma` | Neither `.env` nor `data/` is tracked |
 | 6 | `docker compose stop`, then `uv run pytest` | Tests pass with the stack down |
