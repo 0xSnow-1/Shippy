@@ -269,7 +269,7 @@ All six pass.
 |---|---|---|
 | 1 | `curl -H "Authorization: Token $BOOKSTACK_TOKEN" localhost:8080/api/pages` | HTTP 200, 24 pages, all trap slugs |
 | 2 | `uv run python scripts/seed_bookstack.py` twice | `created=0 skipped=24 failed=0` |
-| 3 | `uv run pytest` | 11 passed |
+| 3 | `uv run pytest` | 9 passed |
 | 4 | `uv run ruff check .` | clean |
 | 5 | `git status`, `git check-ignore .env` | `.env` ignored, no token in any file |
 | 6 | Cold start from `docker compose down -v` | Full path works from zero |
