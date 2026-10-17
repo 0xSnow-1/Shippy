@@ -10,10 +10,10 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from shippy.compose import BedrockLLM, LLMProvider
 from shippy.retrieve import COLLECTION_NAME, RELEVANCE_FLOOR, SearchResult, search_sop
-from shippy.routes import SearchFn, create_router
+from shippy.routes import SearchFn, create_router, create_workflow_router
 
 CHROMA_PATH = Path("data/chroma")
-PROTECTED_PREFIX = "/lookup"
+PROTECTED_PREFIXES = ("/lookup", "/workflows", "/runs")
 DEFAULT_DEV_KEY = "test-key"
 
 
@@ -23,7 +23,7 @@ class APIKeyMiddleware(BaseHTTPMiddleware):
         self.api_key = api_key
 
     async def dispatch(self, request: Request, call_next):
-        if request.url.path.startswith(PROTECTED_PREFIX) and request.headers.get("x-api-key") != self.api_key:
+        if request.url.path.startswith(PROTECTED_PREFIXES) and request.headers.get("x-api-key") != self.api_key:
             return JSONResponse(status_code=401, content={"error": "unauthorized"})
         return await call_next(request)
 
@@ -44,6 +44,7 @@ def get_app(
     search: SearchFn | None = None,
     provider: LLMProvider | None = None,
     api_key: str | None = None,
+    db_path: str | Path | None = None,
 ) -> FastAPI:
     search = search or live_search(open_sops_collection())
     provider = provider or BedrockLLM()
@@ -52,6 +53,7 @@ def get_app(
     app = FastAPI(title="Shippy")
     app.add_middleware(APIKeyMiddleware, api_key=api_key)
     app.include_router(create_router(search, provider))
+    app.include_router(create_workflow_router(db_path))
 
     @app.get("/health")
     async def health() -> dict:

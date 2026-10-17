@@ -77,13 +77,16 @@ Verify result 2026-10-15: `uv run pytest tests/test_contract.py` — 5 passed.
 
 ### Phase 5: Gated write, audit log, Asana
 
-- [ ] Append-only `run_events` table in SQLite (WAL)
-- [ ] Workflow state machine: `POST /workflows/run` returns `pending_approval`; `POST /workflows/{id}/approve|reject` advances it
-- [ ] Event capture on every transition
-- [ ] Dual-mode `create_task`: live Asana PAT mode + SQLite fallback
-- [ ] `respx` contract test pinned to Asana's schema (implementation follows `docs/learn_asana.md`)
-- [ ] `GET /runs/{id}` replays the event trail in order
-- [ ] Verify: `uv run pytest tests/test_workflow.py tests/test_tools_task.py` passes; a fallback-mode run lands a task; `GET /runs/{id}` returns the full trail.
+- [x] Append-only `run_events` table in SQLite (WAL)
+- [x] Workflow state machine: `POST /workflows/run` returns `pending_approval`; `POST /workflows/{id}/approve|reject` advances it
+- [x] Event capture on every transition
+- [x] Dual-mode `create_task`: live Asana PAT mode + SQLite fallback
+- [x] `respx` contract test pinned to Asana's schema (implementation follows `docs/learn_asana.md`)
+- [x] `GET /runs/{id}` replays the event trail in order
+- [x] Verify: `uv run pytest tests/test_workflow.py tests/test_tools_task.py` passes; a fallback-mode run lands a task; `GET /runs/{id}` returns the full trail.
+
+Verify result 2026-10-17: `uv run pytest tests/test_workflow.py tests/test_tools_task.py` - 16 passed.
+Fallback approve landed `tasks` row id 1 (`local:` ref); `GET /runs/{id}` returned `run_created`, `approved`, `task_created` in order.
 
 ### Phase 6: Slack and Gmail adapters
 
