@@ -74,6 +74,6 @@
 
 - [x] Tick every passed item in this plan and in `validation.md`
 - [x] Tick the phase 5 boxes in `specs/constitution/roadmap.md`
-- [ ] Commit on `phase5-gated-write`, push it, open a ready-for-review PR
-- [ ] Confirm the PR prints `draft: no`
-- [ ] Verify: PR is open, not a draft, and the `done:` status line carries its URL.
+- [x] Commit on `phase5-gated-write`, push it, open a ready-for-review PR
+- [x] Confirm the PR prints `draft: no`
+- [x] Verify: PR is open, not a draft, and the `done:` status line carries its URL.

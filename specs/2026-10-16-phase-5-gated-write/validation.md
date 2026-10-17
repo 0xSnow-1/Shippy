@@ -58,6 +58,6 @@
 
 - [x] All gates pass.
 - [x] Tests cover both task modes and the full event trail.
-- [ ] Proof in the final summary includes the real pytest output.
-- [ ] PR is open, ready for review, and prints `draft: no`.
+- [x] Proof in the final summary includes the real pytest output.
+- [x] PR is open, ready for review, and prints `draft: no`.
 - [x] The guide matches the four questions and the README row is done.
