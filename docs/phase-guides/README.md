@@ -37,7 +37,7 @@ These guides are the story.
 | 2 | `phase-2-dual-ingestion.md` | done |
 | 3 | `phase-3-retrieval-and-evals.md` | done |
 | 4 | `phase-4-rest-core.md` | done |
-| 5 | not yet written | pending |
+| 5 | `phase-5-gated-write-asana.md` | done |
 | 6 | not yet written | pending |
 
 ## Rule

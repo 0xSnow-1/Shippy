@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import os
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 
+from shippy import store, workflow
 from shippy.compose import LLMProvider, compose
 from shippy.retrieve import SearchResult
 from shippy.validate import validate
@@ -69,5 +71,66 @@ def create_router(search: SearchFn, provider: LLMProvider) -> APIRouter:
             "source_id": best.get("sop_id"),
             "source_links": source_links(result.chunks[:1]),
         }
+
+    return router
+
+
+def create_workflow_router(db_path: str | Path | None = None) -> APIRouter:
+    router = APIRouter()
+
+    @router.post("/workflows/run")
+    async def start_run(request: Request) -> Any:
+        try:
+            body = await request.json()
+        except ValueError:
+            body = None
+        action = body.get("action") if isinstance(body, dict) else None
+        payload = body.get("payload") if isinstance(body, dict) else None
+        if not isinstance(action, str) or not isinstance(payload, dict):
+            return JSONResponse(status_code=400, content={"error": "action and payload are required"})
+
+        conn = store.connect(db_path)
+        try:
+            return workflow.start(conn, action, payload)
+        except workflow.UnknownActionError as exc:
+            return JSONResponse(status_code=400, content={"error": str(exc)})
+        finally:
+            conn.close()
+
+    @router.post("/workflows/{run_id}/approve")
+    async def approve_run(run_id: str) -> Any:
+        conn = store.connect(db_path)
+        try:
+            return workflow.approve(conn, run_id, db_path=db_path)
+        except workflow.UnknownRunError as exc:
+            return JSONResponse(status_code=404, content={"error": str(exc)})
+        except workflow.InvalidStateError as exc:
+            return JSONResponse(status_code=409, content={"error": str(exc)})
+        except workflow.TaskFailedError as exc:
+            return JSONResponse(status_code=500, content={"error": str(exc)})
+        finally:
+            conn.close()
+
+    @router.post("/workflows/{run_id}/reject")
+    async def reject_run(run_id: str) -> Any:
+        conn = store.connect(db_path)
+        try:
+            return workflow.reject(conn, run_id)
+        except workflow.UnknownRunError as exc:
+            return JSONResponse(status_code=404, content={"error": str(exc)})
+        except workflow.InvalidStateError as exc:
+            return JSONResponse(status_code=409, content={"error": str(exc)})
+        finally:
+            conn.close()
+
+    @router.get("/runs/{run_id}")
+    async def read_run(run_id: str) -> Any:
+        conn = store.connect(db_path)
+        try:
+            return workflow.replay(conn, run_id)
+        except workflow.UnknownRunError as exc:
+            return JSONResponse(status_code=404, content={"error": str(exc)})
+        finally:
+            conn.close()
 
     return router
