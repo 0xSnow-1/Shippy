@@ -75,7 +75,7 @@
 
 ## Group 9: Tick boxes, commit, pull request
 
-- [ ] Tick every passed item in this plan and in `validation.md`
-- [ ] Commit on `v1-demo-runbook`, push it, open a ready-for-review PR
-- [ ] Confirm the PR prints `draft: no`
-- [ ] Verify: PR is open, not a draft, and the `done:` status line carries its URL.
+- [x] Tick every passed item in this plan and in `validation.md`
+- [x] Commit on `v1-demo-runbook`, push it, open a ready-for-review PR
+- [x] Confirm the PR prints `draft: no`
+- [x] Verify: PR is open, not a draft, and the `done:` status line carries its URL.

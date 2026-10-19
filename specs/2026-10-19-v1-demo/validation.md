@@ -53,8 +53,8 @@
 
 ## Merge criteria
 
-- [ ] All gates pass.
-- [ ] The full demo output is in the final summary.
-- [ ] Proof in the final summary includes the real `DEMO PASSED (8/8 steps)` line.
-- [ ] PR is open, ready for review, and prints `draft: no`.
-- [ ] The README alone is enough to run the demo.
+- [x] All gates pass.
+- [x] The full demo output is in the final summary.
+- [x] Proof in the final summary includes the real `DEMO PASSED (8/8 steps)` line.
+- [x] PR is open, ready for review, and prints `draft: no`.
+- [x] The README alone is enough to run the demo.
