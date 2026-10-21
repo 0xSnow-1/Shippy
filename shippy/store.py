@@ -42,6 +42,27 @@ CREATE TABLE IF NOT EXISTS tasks (
     created_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    message_ref TEXT NOT NULL UNIQUE,
+    channel TEXT NOT NULL DEFAULT '',
+    text TEXT NOT NULL DEFAULT '',
+    mode TEXT NOT NULL,
+    run_id TEXT,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS outbox (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    message_ref TEXT NOT NULL UNIQUE,
+    recipient TEXT NOT NULL DEFAULT '',
+    subject TEXT NOT NULL DEFAULT '',
+    body TEXT NOT NULL DEFAULT '',
+    mode TEXT NOT NULL,
+    run_id TEXT,
+    created_at TEXT NOT NULL
+);
+
 CREATE TRIGGER IF NOT EXISTS run_events_no_update
 BEFORE UPDATE ON run_events
 BEGIN
@@ -52,6 +73,30 @@ CREATE TRIGGER IF NOT EXISTS run_events_no_delete
 BEFORE DELETE ON run_events
 BEGIN
     SELECT RAISE(ABORT, 'run_events is append-only');
+END;
+
+CREATE TRIGGER IF NOT EXISTS messages_no_update
+BEFORE UPDATE ON messages
+BEGIN
+    SELECT RAISE(ABORT, 'messages is append-only');
+END;
+
+CREATE TRIGGER IF NOT EXISTS messages_no_delete
+BEFORE DELETE ON messages
+BEGIN
+    SELECT RAISE(ABORT, 'messages is append-only');
+END;
+
+CREATE TRIGGER IF NOT EXISTS outbox_no_update
+BEFORE UPDATE ON outbox
+BEGIN
+    SELECT RAISE(ABORT, 'outbox is append-only');
+END;
+
+CREATE TRIGGER IF NOT EXISTS outbox_no_delete
+BEFORE DELETE ON outbox
+BEGIN
+    SELECT RAISE(ABORT, 'outbox is append-only');
 END;
 """
 
@@ -171,3 +216,42 @@ def get_task(conn: sqlite3.Connection, task_id: int) -> dict[str, Any] | None:
     if row is None:
         return None
     return dict(row)
+
+
+def insert_message(
+    conn: sqlite3.Connection,
+    *,
+    channel: str,
+    text: str,
+    mode: str,
+    run_id: str | None = None,
+    message_ref: str | None = None,
+) -> int:
+    ref = message_ref or f"local:{uuid.uuid4().hex}"
+    cursor = conn.execute(
+        "INSERT INTO messages (message_ref, channel, text, mode, run_id, created_at)"
+        " VALUES (?, ?, ?, ?, ?, ?)",
+        (ref, channel, text, mode, run_id, now_iso()),
+    )
+    conn.commit()
+    return int(cursor.lastrowid)
+
+
+def insert_outbox(
+    conn: sqlite3.Connection,
+    *,
+    recipient: str,
+    subject: str,
+    body: str,
+    mode: str,
+    run_id: str | None = None,
+    message_ref: str | None = None,
+) -> int:
+    ref = message_ref or f"local:{uuid.uuid4().hex}"
+    cursor = conn.execute(
+        "INSERT INTO outbox (message_ref, recipient, subject, body, mode, run_id, created_at)"
+        " VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (ref, recipient, subject, body, mode, run_id, now_iso()),
+    )
+    conn.commit()
+    return int(cursor.lastrowid)

@@ -69,11 +69,14 @@ Verify result 2026-10-15: `uv run pytest tests/test_contract.py` — 5 passed.
 
 ### Phase 4: REST core
 
-- [ ] FastAPI app
-- [ ] API-key middleware on `/lookup`
-- [ ] `POST /lookup` wires retrieval plus contract
-- [ ] `GET /health` stays open
-- [ ] Verify: `curl` with wrong key returns 401; correct key returns a cited answer with source ID and verbatim quote; unanswerable question returns a refusal with source links.
+- [x] FastAPI app
+- [x] API-key middleware on `/lookup`
+- [x] `POST /lookup` wires retrieval plus contract
+- [x] `GET /health` stays open
+- [x] Verify: `curl` with wrong key returns 401; correct key returns a cited answer with source ID and verbatim quote; unanswerable question returns a refusal with source links.
+
+Verify result 2026-10-19 (bookkeeping; phase 4 shipped 2026-10-16): `uv run pytest tests/test_lookup.py` - 5 passed.
+Wrong key returned 401; unanswerable question returned a refusal with three source links; cited answer returned `sop-damaged-parcel-claims` with a verbatim quote.
 
 ### Phase 5: Gated write, audit log, Asana
 
@@ -90,11 +93,14 @@ Fallback approve landed `tasks` row id 1 (`local:` ref); `GET /runs/{id}` return
 
 ### Phase 6: Slack and Gmail adapters
 
-- [ ] Dual-mode `send_message`: live Slack mode + no-credential fallback
-- [ ] Dual-mode `send_email`: live Gmail OAuth mode + SQLite outbox fallback
-- [ ] `respx` contract tests for both adapters
-- [ ] Live activation stays optional per adapter; fallback modes prove every contract without tokens
-- [ ] Verify: `uv run pytest tests/test_tools_slack.py tests/test_tools_email.py` passes; a fallback email lands in the outbox table.
+- [x] Dual-mode `send_message`: live Slack mode + no-credential fallback
+- [x] Dual-mode `send_email`: live Gmail OAuth mode + SQLite outbox fallback
+- [x] `respx` contract tests for both adapters
+- [x] Live activation stays optional per adapter; fallback modes prove every contract without tokens
+- [x] Verify: `uv run pytest tests/test_tools_slack.py tests/test_tools_email.py` passes; a fallback email lands in the outbox table.
+
+Verify result 2026-10-19: `uv run pytest tests/test_tools_slack.py tests/test_tools_email.py` - 7 passed.
+Fallback email landed `outbox` row id 1 (`local:` ref) with recipient, subject, and body.
 
 ## Post-MVP backlog
 
@@ -153,3 +159,4 @@ Human-only actions: Slack workspace creation, Google Cloud provisioning - schedu
 *Last amended: 2026-10-08 - phase 13 gains `GET /runs/{id}/status` for agent status polling (JD line 13)*
 *Last amended: 2026-10-09 - grilling session: SSE and load script removed (7), constraint-key extras stripped (6, 9, 10, 14, 16, 18), BM25 head-to-head added (4), B0 split into two flags (6), wall-clock timeout added (9), Phase 17 expands to ADR set + defense drill, CI blocks golden cases and log completeness (16). Decisions in `docs/decisions.md`.*
 *Last amended: 2026-10-14 - MVP reconstruction: 19 phases become five MVP phases (2-6) plus post-MVP backlog; hybrid retrieval, LangGraph runner, stats, CI gate, golden set deferred; REST + SQLite approval state machine; deterministic citation contract (no confidence threshold); client corpus indexed in phase 2; three dual-mode adapters folded into phases 5-6; three-file spec per phase kept; audit events from day one.*
+*Last amended: 2026-10-19 - phase 4 boxes ticked (bookkeeping for the 2026-10-16 ship); phase 6 shipped and ticked with verify result; MVP finish line reached.*

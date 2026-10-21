@@ -38,7 +38,7 @@ These guides are the story.
 | 3 | `phase-3-retrieval-and-evals.md` | done |
 | 4 | `phase-4-rest-core.md` | done |
 | 5 | `phase-5-gated-write-asana.md` | done |
-| 6 | not yet written | pending |
+| 6 | `phase-6-adapters.md` | done |
 
 ## Rule
 
